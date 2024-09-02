@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+#define MAX 100 // Tamanho máximo da pilha
+
+typedef struct {
+    int top;
+    int arr[MAX];
+} Stack;
+
+void initStack(Stack *s) {
+    s->top = -1;
+}
+
+int isFull(Stack *s) {
+    return s->top == MAX - 1;
+}
+
+int isEmpty(Stack *s) {
+    return s->top == -1;
+}
+
+void push(Stack *s, int value) {
+	setlocale(LC_ALL, "portuguese");
+    if (isFull(s)) {
+        printf("Pilha cheia! Não é possível adicionar o elemento %d.\n", value);
+        return;
+    }
+    s->arr[++s->top] = value;
+    printf("Elemento %d adicionado à pilha.\n", value);
+}
+
+int pop(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Pilha vazia! Não há elementos para remover.\n");
+        return -1;
+    }
+    return s->arr[s->top--];
+}
+
+int peek(Stack *s) {
+	setlocale(LC_ALL, "portuguese");
+    if (isEmpty(s)) {
+        printf("Pilha vazia! Não há elementos no topo.\n");
+        return -1;
+    }
+    return s->arr[s->top];
+}
+
+void printStack(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Pilha vazia!\n");
+        return;
+    }
+    printf("Elementos da pilha: ");
+    for (int i = s->top; i >= 0; i--) {
+        printf("%d ", s->arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    Stack s;
+    initStack(&s);
+
+    printStack(&s);
+
+    push(&s, 10);
+    push(&s, 20);
+    push(&s, 30);
+
+    printStack(&s);
+
+    printf("Elemento no topo: %d\n", peek(&s));
+
+    printf("Elemento removido: %d\n", pop(&s));
+    printStack(&s);
+
+    return 0;
+}
