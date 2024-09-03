@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <ctype.h>
+
+#define MAX_LENGTH 100
+
+void encryptCaesar(char *message, int shift, char *result) {
+    int i = 0;
+    while (message[i] != '\0') {
+        if (isalpha(message[i])) {
+            char base = islower(message[i]) ? 'a' : 'A';
+            result[i] = (message[i] - base + shift) % 26 + base;
+        } else {
+            result[i] = message[i];
+        }
+        i++;
+    }
+    result[i] = '\0';
+}
+
+void decryptCaesar(char *message, int shift, char *result) {
+    encryptCaesar(message, 26 - shift, result);
+}
+
+int main() {
+    char message[MAX_LENGTH];
+    char encrypted[MAX_LENGTH];
+    char decrypted[MAX_LENGTH];
+    int shift;
+
+    printf("Digite a mensagem (máximo %d caracteres): ", MAX_LENGTH - 1);
+    fgets(message, MAX_LENGTH, stdin);
+    size_t len = strlen(message);
+    if (len > 0 && message[len - 1] == '\n') {
+        message[len - 1] = '\0';
+    }
+
+    printf("Digite o valor do deslocamento (número inteiro): ");
+    scanf("%d", &shift);
+    shift = shift % 26; 
+    encryptCaesar(message, shift, encrypted);
+    printf("Mensagem criptografada: %s\n", encrypted);
+
+    decryptCaesar(encrypted, shift, decrypted);
+    printf("Mensagem descriptografada: %s\n", decrypted);
+
+    return 0;
+}
