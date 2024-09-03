@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <locale.h>
+#define MAX 100
+
+typedef struct {
+    int top;
+    int items[MAX];
+} Stack;
+
+void push(Stack* s, int value) {
+    if (s->top < MAX - 1) {
+        s->items[++s->top] = value;
+    } else {
+        printf("Pilha cheia!\n");
+    }
+}
+
+int pop(Stack* s) {
+    if (s->top >= 0) {
+        return s->items[s->top--];
+    } else {
+        printf("Pilha vazia!\n");
+        return -1;
+    }
+}
+
+int peek(Stack* s) {
+    if (s->top >= 0) {
+        return s->items[s->top];
+    } else {
+        return -1;
+    }
+}
+
+int isEmpty(Stack* s) {
+    return s->top == -1;
+}
+
+int evaluatePostfix(const char* postfix) {
+	setlocale(LC_ALL, "portuguese");
+    Stack s;
+    s.top = -1;
+    
+    for (int i = 0; postfix[i] != '\0'; i++) {
+        char c = postfix[i];
+        
+        if (isspace(c)) {
+            continue;
+        }
+        
+        if (isdigit(c)) {
+            push(&s, c - '0');
+        } else {
+            int operand2 = pop(&s);
+            int operand1 = pop(&s);
+            
+            switch (c) {
+                case '+':
+                    push(&s, operand1 + operand2);
+                    break;
+                case '-':
+                    push(&s, operand1 - operand2);
+                    break;
+                case '*':
+                    push(&s, operand1 * operand2);
+                    break;
+                case '/':
+                    if (operand2 != 0) {
+                        push(&s, operand1 / operand2);
+                    } else {
+                        printf("Erro: Divisão por zero.\n");
+                        return -1;
+                    }
+                    break;
+                default:
+                    printf("Erro: Operador desconhecido %c.\n", c);
+                    return -1;
+            }
+        }
+    }
+    
+    return pop(&s);
+}
+
+int main() {
+	setlocale(LC_ALL, "portuguese");
+    const char* postfix = "53 42 * 15 + /";
+    int result = evaluatePostfix(postfix);
+    
+    printf("Expressão pós-fixa: %s\n", postfix);
+    printf("Resultado da avaliação: %d\n", result);
+    
+    return 0;
+}
