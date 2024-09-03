@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <locale.h>
+
+#define MAX 100
+
+typedef struct {
+    int top;
+    char items[MAX];
+} Stack;
+
+void push(Stack* s, char c) {
+    if (s->top < MAX - 1) {
+        s->items[++s->top] = c;
+    } else {
+        printf("Pilha cheia!\n");
+    }
+}
+
+char pop(Stack* s) {
+    if (s->top >= 0) {
+        return s->items[s->top--];
+    } else {
+        printf("Pilha vazia!\n");
+        return '\0';
+    }
+}
+
+char peek(Stack* s) {
+    if (s->top >= 0) {
+        return s->items[s->top];
+    } else {
+        return '\0';
+    }
+}
+
+int isEmpty(Stack* s) {
+    return s->top == -1;
+}
+
+int precedence(char op) {
+    switch (op) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        case '^':
+            return 3;
+        default:
+            return 0;
+    }
+}
+
+void infixToPostfix(const char* infix, char* postfix) {
+    Stack s;
+    s.top = -1;
+    int j = 0;
+
+    for (int i = 0; infix[i] != '\0'; i++) {
+        char c = infix[i];
+
+        if (isspace(c)) {
+            continue;
+        }
+
+        if (isalnum(c)) {
+            postfix[j++] = c;
+        } else if (c == '(') {
+            push(&s, c);
+        } else if (c == ')') {
+            while (!isEmpty(&s) && peek(&s) != '(') {
+                postfix[j++] = pop(&s);
+            }
+            pop(&s);
+        } else {
+            while (!isEmpty(&s) && precedence(peek(&s)) >= precedence(c)) {
+                postfix[j++] = pop(&s);
+            }
+            push(&s, c);
+        }
+    }
+
+    while (!isEmpty(&s)) {
+        postfix[j++] = pop(&s);
+    }
+    postfix[j] = '\0';
+}
+
+int main() {
+	setlocale(LC_ALL, "portuguese");
+    const char* infix = "3 + 5 * ( 2 - 8 )";
+    char postfix[MAX];
+    
+    infixToPostfix(infix, postfix);
+    
+    printf("Expressão infixa: %s\n", infix);
+    printf("Expressão pós-fixa: %s\n", postfix);
+    
+    return 0;
+}
