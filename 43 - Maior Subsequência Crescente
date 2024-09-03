@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <locale.h>
+#define MAX 100
+
+void findLIS(int arr[], int n) {
+	setlocale(LC_ALL, "portuguese");
+    int lis[MAX];
+    int i, j, maxLength = 0, maxIndex = 0;
+
+    for (i = 0; i < n; i++) {
+        lis[i] = 1;
+    }
+
+    for (i = 1; i < n; i++) {
+        for (j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+                lis[i] = lis[j] + 1;
+            }
+        }
+    }
+
+    for (i = 0; i < n; i++) {
+        if (lis[i] > maxLength) {
+            maxLength = lis[i];
+            maxIndex = i;
+        }
+    }
+    
+    int subseq[MAX];
+    int length = maxLength;
+    for (i = maxIndex; i >= 0; i--) {
+        if (lis[i] == length) {
+            subseq[length - 1] = arr[i];
+            length--;
+        }
+    }
+
+    printf("Maior subsequência crescente é: ");
+    for (i = 0; i < maxLength; i++) {
+        printf("%d ", subseq[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+	setlocale(LC_ALL, "portuguese");
+    int arr[MAX];
+    int n;
+
+    printf("Digite o número de elementos no vetor: ");
+    scanf("%d", &n);
+
+    printf("Digite os %d elementos do vetor:\n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+    
+    findLIS(arr, n);
+
+    return 0;
+}
