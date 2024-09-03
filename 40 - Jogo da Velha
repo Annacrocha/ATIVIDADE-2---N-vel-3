@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <locale.h>
+#define SIZE 3
+
+void initializeBoard(char board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board[i][j] = ' ';
+        }
+    }
+}
+
+void displayBoard(char board[SIZE][SIZE]) {
+    printf("\n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf(" %c ", board[i][j]);
+            if (j < SIZE - 1) printf("|");
+        }
+        printf("\n");
+        if (i < SIZE - 1) {
+            for (int k = 0; k < SIZE; k++) {
+                printf("---");
+                if (k < SIZE - 1) printf("+");
+            }
+            printf("\n");
+        }
+    }
+    printf("\n");
+}
+
+int checkWinner(char board[SIZE][SIZE], char player) {
+    for (int i = 0; i < SIZE; i++) {
+        if ((board[i][0] == player && board[i][1] == player && board[i][2] == player) ||
+            (board[0][i] == player && board[1][i] == player && board[2][i] == player)) {
+            return 1;
+        }
+    }
+    if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
+        (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
+        return 1;
+    }
+    return 0;
+}
+
+int isBoardFull(char board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == ' ') {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+int main() {
+	setlocale(LC_ALL, "portuguese");
+    char board[SIZE][SIZE];
+    int row, col;
+    char currentPlayer = 'X';
+
+    initializeBoard(board);
+
+    while (1) {
+        displayBoard(board);
+
+        printf("Jogador %c, insira a linha (0, 1 ou 2) e a coluna (0, 1 ou 2): ", currentPlayer);
+        scanf("%d %d", &row, &col);
+
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+            printf("Entrada inválida! Tente novamente.\n");
+            continue;
+        }
+
+        if (board[row][col] != ' ') {
+            printf("Espaço já ocupado! Tente novamente.\n");
+            continue;
+        }
+
+        board[row][col] = currentPlayer;
+
+        if (checkWinner(board, currentPlayer)) {
+            displayBoard(board);
+            printf("Parabéns, Jogador %c! Você venceu!\n", currentPlayer);
+            break;
+        }
+
+        if (isBoardFull(board)) {
+            displayBoard(board);
+            printf("Empate! O tabuleiro está cheio.\n");
+            break;
+        }
+
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    return 0;
+}
