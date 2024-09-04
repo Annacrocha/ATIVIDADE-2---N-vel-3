@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <locale.h>
+#define N 8  // Tamanho do tabuleiro de xadrez (8x8)
+
+// Função para imprimir o tabuleiro de xadrez
+void printBoard(int board[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (board[i][j] == 1)
+                printf(" K ");
+            else
+                printf(" . ");
+        }
+        printf("\n");
+    }
+}
+
+// Função para verificar se uma posição está dentro dos limites do tabuleiro
+int isSafe(int x, int y, int board[N][N]) {
+    return (x >= 0 && x < N && y >= 0 && y < N && board[x][y] == 0);
+}
+
+// Função para simular os movimentos do cavalo
+void knightMoves(int startX, int startY) {
+	setlocale(LC_ALL, "portuguese");
+    int moves[8][2] = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+
+    int board[N][N] = {0};  // Inicializa o tabuleiro com 0
+    board[startX][startY] = 1;  // Marca a posição inicial do cavalo
+
+    printf("Movimentos possíveis a partir da posição (%d, %d):\n", startX, startY);
+
+    for (int i = 0; i < 8; i++) {
+        int newX = startX + moves[i][0];
+        int newY = startY + moves[i][1];
+        
+        if (isSafe(newX, newY, board)) {
+            board[newX][newY] = 1;
+            printf("Cavalo pode se mover para (%d, %d)\n", newX, newY);
+        }
+    }
+    
+    // Imprime o tabuleiro com a posição inicial do cavalo
+    printf("\nTabuleiro com o cavalo na posição inicial:\n");
+    printBoard(board);
+}
+
+int main() {
+	setlocale(LC_ALL, "portuguese");
+    int startX, startY;
+
+    printf("Digite a posição inicial do cavalo (x y): ");
+    scanf("%d %d", &startX, &startY);
+
+    if (startX < 0 || startX >= N || startY < 0 || startY >= N) {
+        printf("Posição inválida. Deve estar entre 0 e 7.\n");
+        return 1;
+    }
+
+    knightMoves(startX, startY);
+
+    return 0;
+}
